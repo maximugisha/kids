@@ -2,3 +2,4 @@
 .env
 .idea
 staticfiles
+**/migrations/__pycache__/**
