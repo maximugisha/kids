@@ -9,6 +9,9 @@ import re
 import subprocess
 import sys
 
+# Define directories to exclude
+EXCLUDED_DIRS = ["migrations", "some_other_dir"]
+
 # ANSI color codes for Windows (using colorama)
 try:
     from colorama import Fore, Style, init
@@ -34,7 +37,13 @@ try:
     )
     # Filter Python files
     staged_files = [
-        file for file in staged_files_output.splitlines() if file.endswith(".py")
+        file
+        for file in staged_files_output.splitlines()
+        if file.endswith(".py")
+        and not any(
+            f"/{excluded}/" in file.replace("\\", "/") or f"\\{excluded}\\" in file
+            for excluded in EXCLUDED_DIRS
+        )
     ]
 except subprocess.CalledProcessError:
     print(f"{RED}Failed to get staged files{NC}")
