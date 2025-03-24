@@ -1,0 +1,115 @@
+<!-- templates/posts/post_detail.html -->
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Post - Kids DIY{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <a href="{% url 'profile' post.user.username %}">
+                            {% if post.user.profile_picture %}
+                                <img src="{{ post.user.profile_picture.url }}" class="rounded-circle me-2" width="32" height="32">
+                            {% else %}
+                                <i class="fas fa-user-circle me-2" style="font-size: 32px;"></i>
+                            {% endif %}
+                        </a>
+                        <div>
+                            <a href="{% url 'profile' post.user.username %}" class="text-decoration-none text-dark fw-bold">
+                                {{ post.user.username }}
+                            </a>
+                            <div class="text-muted small">
+                                {{ post.created_at|timesince }} ago
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <p class="card-text">{{ post.content }}</p>
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" class="img-fluid rounded mb-3" alt="Post Image">
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div>
+                            <form method="post" action="{% url 'like_toggle' post.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm {% if user_liked %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                                    <i class="fas fa-heart"></i> {{ post.likes.count }}
+                                </button>
+                            </form>
+
+                            <form method="post" action="{% url 'share_post' post.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-secondary ms-2">
+                                    <i class="fas fa-share"></i> {{ post.shares.count }}
+                                </button>
+                            </form>
+                        </div>
+
+                        {% if post.user == user %}
+                            <form method="post" action="{% url 'delete_post' post.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this post?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Comments ({{ comments.count }})</h5>
+                </div>
+                <div class="card-body">
+                    <!-- New Comment Form -->
+                    <form method="post" class="mb-4">
+                        {% csrf_token %}
+                        {{ comment_form|crispy }}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Comment
+                        </button>
+                    </form>
+
+                    <!-- Comments List -->
+                    {% if comments %}
+                        {% for comment in comments %}
+                            <div class="d-flex mb-3 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
+                                <a href="{% url 'profile' comment.user.username %}" class="me-2">
+                                    {% if comment.user.profile_picture %}
+                                        <img src="{{ comment.user.profile_picture.url }}" class="rounded-circle" width="40" height="40">
+                                    {% else %}
+                                        <i class="fas fa-user-circle" style="font-size: 40px;"></i>
+                                    {% endif %}
+                                </a>
+                                <div class="flex-grow-1">
+                                    <div>
+                                        <a href="{% url 'profile' comment.user.username %}" class="text-decoration-none text-dark fw-bold">
+                                            {{ comment.user.username }}
+                                        </a>
+                                        <span class="text-muted ms-2 small">
+                                        {{ comment.created_at|timesince }} ago
+                                    </span>
+                                    </div>
+                                    <p class="mb-0">{{ comment.content }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-comment-slash mb-2" style="font-size: 32px;"></i>
+                            <p>No comments yet. Be the first to comment!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
