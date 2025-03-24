@@ -5,7 +5,6 @@ This script is designed to work on Windows systems.
 """
 
 import os
-import re
 import subprocess
 import sys
 

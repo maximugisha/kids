@@ -22,7 +22,11 @@ class User(AbstractUser):
 
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
     organization = models.ForeignKey(
-        Organization, on_delete=models.CASCADE, related_name="members"
+        Organization,
+        on_delete=models.CASCADE,
+        related_name="members",
+        null=True,
+        blank=True,
     )
     profile_picture = models.ImageField(
         upload_to="profile_pictures/", blank=True, null=True

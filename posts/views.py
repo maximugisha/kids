@@ -23,7 +23,7 @@ def home(request):
 
     # Combine and sort all posts
     all_posts = list(posts) + list(user_posts)
-    all_posts.sort(key=lambda x: x.created_at, reverse=True)
+    # all_posts.sort(key=lambda x: x.created_at, reverse=True)
 
     context = {
         "posts": all_posts,
