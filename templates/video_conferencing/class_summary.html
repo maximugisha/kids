@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ video_class.title }} - Class Summary - Kids DIY{% endblock %}
+
+{% block content %}
+    <div class="container py-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Class Summary: {{ video_class.title }}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Class Details</h5>
+                        <table class="table">
+                            <tr>
+                                <th>Teacher:</th>
+                                <td>
+                                    <a href="{% url 'profile' video_class.teacher.username %}">
+                                        {{ video_class.teacher.username }}
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Date:</th>
+                                <td>{{ video_class.scheduled_time|date:"F d, Y" }}</td>
+                            </tr>
+                            <tr>
+                                <th>Time:</th>
+                                <td>{{ video_class.scheduled_time|date:"h:i A" }} -
+                                    {% if video_class.end_time %}
+                                        {{ video_class.end_time|date:"h:i A" }}
+                                    {% else %}
+                                        (No end time recorded)
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Duration:</th>
+                                <td>
+                                    {% if duration %}
+                                        {{ duration }} minutes
+                                    {% else %}
+                                        (Unknown)
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Participants</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <strong>Teacher:</strong> {{ video_class.teacher.username }}
+                            </li>
+                            {% for student in video_class.students.all %}
+                                <li class="list-group-item">{{ student.username }}</li>
+                            {% empty %}
+                                <li class="list-group-item text-muted">No students enrolled</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                {% if video_class.description %}
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5>Class Description</h5>
+                            <div class="card">
+                                <div class="card-body">
+                                    {{ video_class.description }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h5>Class Chat Log</h5>
+                        <div class="card">
+                            <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                                {% for message in messages %}
+                                    <div class="mb-2 p-2 {% if message.message_type == 'ai' %}bg-light-success{% elif message.user == request.user %}bg-light-primary{% else %}bg-light{% endif %} rounded">
+                                        <strong>
+                                            {% if message.message_type == 'ai' %}
+                                                AI Assistant
+                                            {% elif message.user %}
+                                                {{ message.user.username }}
+                                            {% else %}
+                                                System
+                                            {% endif %}
+                                        </strong>
+                                        <small class="text-muted float-end">{{ message.timestamp|date:"H:i" }}</small>
+                                        <div>{{ message.content }}</div>
+                                    </div>
+                                {% empty %}
+                                    <p class="text-muted">No messages recorded for this class.</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    {% if video_class.teacher == request.user %}
+                        <a href="{% url 'home' %}" class="btn btn-primary">Return to Dashboard</a>
+                        <!-- Add any teacher-specific actions here -->
+                    {% else %}
+                        <a href="{% url 'home' %}" class="btn btn-primary">Return Home</a>
+                        <!-- Add student-specific actions here -->
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

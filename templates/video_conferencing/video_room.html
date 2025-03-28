@@ -6,66 +6,247 @@
 
 {% block extra_css %}
     <style>
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            height: 0;
-            overflow: hidden;
-        }
-
-        .video-container video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .chat-container {
-            height: 60vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 0.25rem;
-        }
-
-        .chat-message {
-            margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 0.5rem;
-        }
-
-        .user-message {
-            background-color: #e9ecef;
-            margin-right: 20%;
-        }
-
-        .current-user-message {
-            background-color: #cfe2ff;
-            margin-left: 20%;
-        }
-
-        .ai-message {
-            background-color: #d1e7dd;
-            margin-right: 20%;
-            border-left: 4px solid #198754;
-        }
-
-        .chat-input {
-            margin-top: 15px;
-        }
-
-        .controls-container {
-            background-color: #f8f9fa;
-            padding: 10px;
-            border-radius: 0.25rem;
-        }
+        {#.video-container {#}
+        {#    position: relative;#}
+        {#    padding-bottom: 56.25%; /* 16:9 aspect ratio */#}
+        {#    height: 0;#}
+        {#    overflow: hidden;#}
+        {#}#}
+        {##}
+        {#.video-container video {#}
+        {#    position: absolute;#}
+        {#    top: 0;#}
+        {#    left: 0;#}
+        {#    width: 100%;#}
+        {#    height: 100%;#}
+        {#}#}
+        {##}
+        {#.chat-container {#}
+        {#    height: 60vh;#}
+        {#    display: flex;#}
+        {#    flex-direction: column;#}
+        {#}#}
+        {##}
+        {#.chat-messages {#}
+        {#    flex: 1;#}
+        {#    overflow-y: auto;#}
+        {#    padding: 15px;#}
+        {#    background-color: #f8f9fa;#}
+        {#    border-radius: 0.25rem;#}
+        {#}#}
+        {##}
+        {#.chat-message {#}
+        {#    margin-bottom: 15px;#}
+        {#    padding: 10px;#}
+        {#    border-radius: 0.5rem;#}
+        {#}#}
+        {##}
+        {#.user-message {#}
+        {#    background-color: #e9ecef;#}
+        {#    margin-right: 20%;#}
+        {#}#}
+        {##}
+        {#.current-user-message {#}
+        {#    background-color: #cfe2ff;#}
+        {#    margin-left: 20%;#}
+        {#}#}
+        {##}
+        {#.ai-message {#}
+        {#    background-color: #d1e7dd;#}
+        {#    margin-right: 20%;#}
+        {#    border-left: 4px solid #198754;#}
+        {#}#}
+        {##}
+        {#.chat-input {#}
+        {#    margin-top: 15px;#}
+        {#}#}
+        {##}
+        {#.controls-container {#}
+        {#    background-color: #f8f9fa;#}
+        {#    padding: 10px;#}
+        {#    border-radius: 0.25rem;#}
+        {#}#}
+        {#/* Add this to your existing CSS in the head section */#}
+        {##}
+        {#.video-container {#}
+        {#    position: relative;#}
+        {#    padding-bottom: 56.25%; /* 16:9 aspect ratio */#}
+        {#    height: 0;#}
+        {#    overflow: hidden;#}
+        {#    background-color: #232323;#}
+        {#    border-radius: 8px;#}
+        {#}#}
+        {##}
+        {##video-grid {#}
+        {#    position: absolute;#}
+        {#    top: 0;#}
+        {#    left: 0;#}
+        {#    width: 100%;#}
+        {#    height: 100%;#}
+        {#    display: grid;#}
+        {#    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));#}
+        {#    gap: 10px;#}
+        {#    padding: 10px;#}
+        {#}#}
+        {##}
+        {#/* Responsive grid adjustments */#}
+        {#@media (max-width: 768px) {#}
+        {#    #video-grid {#}
+        {#        grid-template-columns: 1fr;#}
+        {#    }#}
+        {#}#}
+        {##}
+        {#@media (min-width: 769px) and (max-width: 1200px) {#}
+        {#    #video-grid {#}
+        {#        grid-template-columns: repeat(2, 1fr);#}
+        {#    }#}
+        {#}#}
+        {##}
+        {#@media (min-width: 1201px) {#}
+        {#    #video-grid {#}
+        {#        grid-template-columns: repeat(3, 1fr);#}
+        {#    }#}
+        {#}#}
+        {##}
+        {#/* Participant video styling */#}
+        {#.participant-video {#}
+        {#    position: relative;#}
+        {#    border-radius: 8px;#}
+        {#    overflow: hidden;#}
+        {#    background-color: #000;#}
+        {#    height: 0;#}
+        {#    padding-bottom: 75%; /* 4:3 aspect ratio for the container */#}
+        {#}#}
+        {##}
+        {#.participant-video video {#}
+        {#    position: absolute;#}
+        {#    top: 0;#}
+        {#    left: 0;#}
+        {#    width: 100%;#}
+        {#    height: 100%;#}
+        {#    object-fit: cover;#}
+        {#}#}
+        {##}
+        {#.user-label {#}
+        {#    position: absolute;#}
+        {#    bottom: 10px;#}
+        {#    left: 10px;#}
+        {#    background-color: rgba(0,0,0,0.5);#}
+        {#    color: white;#}
+        {#    padding: 3px 8px;#}
+        {#    border-radius: 4px;#}
+        {#    font-size: 12px;#}
+        {#}#}
+        {##}
+        {#/* Audio-only participant styling */#}
+        {#.audio-only-container {#}
+        {#    position: relative;#}
+        {#    border-radius: 8px;#}
+        {#    background-color: #444;#}
+        {#    display: flex;#}
+        {#    justify-content: center;#}
+        {#    align-items: center;#}
+        {#    height: 0;#}
+        {#    padding-bottom: 75%;#}
+        {#}#}
+        {##}
+        {#.audio-only-icon {#}
+        {#    position: absolute;#}
+        {#    top: 50%;#}
+        {#    left: 50%;#}
+        {#    transform: translate(-50%, -50%);#}
+        {#    text-align: center;#}
+        {#    color: white;#}
+        {#}#}
+        {##}
+        {#/* Hand raise notification */#}
+        {#.hand-raise-notification {#}
+        {#    position: fixed;#}
+        {#    top: 20px;#}
+        {#    right: 20px;#}
+        {#    background-color: #ffc107;#}
+        {#    color: #212529;#}
+        {#    padding: 10px 15px;#}
+        {#    border-radius: 4px;#}
+        {#    box-shadow: 0 4px 6px rgba(0,0,0,0.1);#}
+        {#    z-index: 1000;#}
+        {#    animation: fadeInOut 5s forwards;#}
+        {#}#}
+        {##}
+        {#@keyframes fadeInOut {#}
+        {#    0% { opacity: 0; transform: translateY(-20px); }#}
+        {#    10% { opacity: 1; transform: translateY(0); }#}
+        {#    90% { opacity: 1; transform: translateY(0); }#}
+        {#    100% { opacity: 0; transform: translateY(-20px); }#}
+        {#}#}
+        {##}
+        {#/* Chat message improvements */#}
+        {#.chat-message {#}
+        {#    margin-bottom: 15px;#}
+        {#    padding: 10px;#}
+        {#    border-radius: 8px;#}
+        {#    word-break: break-word;#}
+        {#}#}
+        {##}
+        {#.user-message {#}
+        {#    background-color: #e9ecef;#}
+        {#    margin-right: 20%;#}
+        {#}#}
+        {##}
+        {#.current-user-message {#}
+        {#    background-color: #cfe2ff;#}
+        {#    margin-left: 20%;#}
+        {#}#}
+        {##}
+        {#.ai-message {#}
+        {#    background-color: #d1e7dd;#}
+        {#    margin-right: 20%;#}
+        {#    border-left: 4px solid #198754;#}
+        {#}#}
+        {##}
+        {#.system-message {#}
+        {#    text-align: center;#}
+        {#    background-color: transparent;#}
+        {#    padding: 5px;#}
+        {#    margin: 5px 0;#}
+        {#    font-size: 12px;#}
+        {#    color: #6c757d;#}
+        {#}#}
+        {##}
+        {#/* Controls styling improvements */#}
+        {#.controls-container {#}
+        {#    background-color: rgba(248, 249, 250, 0.8);#}
+        {#    padding: 10px;#}
+        {#    border-radius: 8px;#}
+        {#    backdrop-filter: blur(5px);#}
+        {#    margin-top: 15px;#}
+        {#}#}
+        {##}
+        {#.controls-container button {#}
+        {#    width: 38px;#}
+        {#    height: 38px;#}
+        {#    padding: 0;#}
+        {#    display: inline-flex;#}
+        {#    align-items: center;#}
+        {#    justify-content: center;#}
+        {#}#}
+        {##}
+        {#/* Mobile optimizations */#}
+        {#@media (max-width: 576px) {#}
+        {#    .controls-container {#}
+        {#        position: fixed;#}
+        {#        bottom: 0;#}
+        {#        left: 0;#}
+        {#        width: 100%;#}
+        {#        z-index: 1000;#}
+        {#        border-radius: 0;#}
+        {#        padding: 10px 0;#}
+        {#    }#}
+        {##}
+        {#    .chat-container {#}
+        {#        height: 50vh;#}
+        {#    }#}
+        {#}#}
     </style>
 {% endblock %}
 
@@ -182,31 +363,404 @@
 {% block extra_js %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.7/peerjs.min.js"></script>
     <script>
+        // Updated WebSocket and PeerJS implementation for video_room.html
+
         $(document).ready(function() {
             // WebSocket setup
             const roomName = "{{ video_class.id }}";
             const userId = "{{ user.id }}";
             const userName = "{{ user.username }}";
+            const isTeacher = "{{ video_class.teacher.id }}" == userId;
 
+            // Debug mode - helps troubleshoot connection issues
+            const DEBUG = true;
+            function log(...args) {
+                if (DEBUG) console.log(...args);
+            }
+
+            // Use secure WebSocket if on HTTPS
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
             const chatSocket = new WebSocket(
-                'ws://' + window.location.host + '/ws/class/' + roomName + '/'
+                wsProtocol + window.location.host + '/ws/class/' + roomName + '/'
             );
 
+            // Setup video elements
+            const videoGrid = document.getElementById('video-grid');
+            const myVideo = document.createElement('video');
+            myVideo.muted = true; // Mute our own video
+
+            // Track connected peers and our stream
+            const peers = {};
+            let myStream = null;
+            let myPeerId = null;
+
+            // Generate a unique peer ID that's consistent across page refreshes
+            // but unique to this user and room
+            myPeerId = `user-${userId}-room-${roomName}`;
+
+            log('My peer ID will be:', myPeerId);
+
+            // Initialize PeerJS - IMPORTANT: make sure these settings match your server
+            const myPeer = new Peer(myPeerId, {
+                host: "https://9000-peers-peerjsserver-v8mkqo3gk9i.ws-eu118.gitpod.io",
+                port: '3001', // Make sure this port is open and matches your PeerJS server
+                path: '/', // Adjust this if your PeerJS server uses a different path
+                debug: 2, // Enable debug logging
+                config: {
+                    'iceServers': [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:stun1.l.google.com:19302' }
+                    ]
+                }
+            });
+
+            // Handle PeerJS errors
+            myPeer.on('error', function(err) {
+                log('PeerJS error:', err);
+
+                // Show error message to user
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'alert alert-danger';
+                errorMsg.textContent = 'Connection error: ' + err.type;
+                videoGrid.appendChild(errorMsg);
+
+                if (err.type === 'peer-unavailable') {
+                    // If we can't connect to a peer, it might be because they're using a different PeerJS server
+                    log('Could not connect to peer - they might be on a different server');
+                } else if (err.type === 'network' || err.type === 'disconnected') {
+                    // Attempt to reconnect after a delay
+                    setTimeout(() => {
+                        log('Attempting to reconnect...');
+                        setupUserMedia();
+                    }, 3000);
+                }
+            });
+
+            // When our PeerJS connection is ready
+            myPeer.on('open', id => {
+                log('My PeerJS connection is open with ID:', id);
+                myPeerId = id;
+
+                // Get user media after PeerJS is connected
+                setupUserMedia();
+
+                // Notify other users that we've joined
+                chatSocket.send(JSON.stringify({
+                    'type': 'join',
+                    'user_id': userId,
+                    'username': userName,
+                    'peer_id': id
+                }));
+            });
+
+            // Set up media devices and start capturing audio/video
+            async function setupUserMedia() {
+                log('Setting up user media...');
+                const constraints = {
+                    video: true,
+                    audio: true
+                };
+
+                try {
+                    // Try to get both video and audio
+                    myStream = await navigator.mediaDevices.getUserMedia(constraints);
+                    log('Got media stream:', myStream);
+
+                    // Show our video in the grid
+                    addVideoStream(myVideo, myStream);
+
+                    // Answer calls from other users who joined before us
+                    setupCallAnswering();
+
+                    // Connect to existing users in the room
+                    connectToExistingUsers();
+
+                } catch (err) {
+                    log('Error getting media devices:', err);
+
+                    // Show error message to user and try with just audio
+                    if (err.name === 'NotAllowedError') {
+                        const errorMsg = document.createElement('div');
+                        errorMsg.className = 'alert alert-warning';
+                        errorMsg.textContent = 'Please allow camera and microphone access to join the video call.';
+                        videoGrid.appendChild(errorMsg);
+
+                        try {
+                            // Try with just audio if video fails
+                            myStream = await navigator.mediaDevices.getUserMedia({
+                                video: false,
+                                audio: true
+                            });
+                            log('Got audio-only stream');
+
+                            // Create a placeholder for our audio-only stream
+                            const audioPlaceholder = document.createElement('div');
+                            audioPlaceholder.className = 'audio-only-container';
+                            audioPlaceholder.innerHTML = `
+                        <div class="audio-only-icon">
+                            <i class="fas fa-user fa-3x"></i>
+                            <p>${userName} (audio only)</p>
+                        </div>
+                    `;
+                            videoGrid.appendChild(audioPlaceholder);
+
+                            // Still set up call answering for audio-only
+                            setupCallAnswering();
+                            connectToExistingUsers();
+
+                        } catch (audioErr) {
+                            log('Error getting audio:', audioErr);
+                            const errorMsg = document.createElement('div');
+                            errorMsg.className = 'alert alert-danger';
+                            errorMsg.textContent = 'Unable to access microphone. You can still watch and chat.';
+                            videoGrid.appendChild(errorMsg);
+                        }
+                    }
+                }
+            }
+
+            // Setup to answer incoming calls
+            function setupCallAnswering() {
+                log('Setting up call answering...');
+                myPeer.on('call', call => {
+                    log('Received call from:', call.peer);
+
+                    // Answer the call by sending our stream
+                    call.answer(myStream);
+
+                    // Create a video element for the caller
+                    const userVideo = document.createElement('video');
+
+                    // When we receive their stream
+                    call.on('stream', userVideoStream => {
+                        log('Received stream from caller');
+                        addVideoStream(userVideo, userVideoStream);
+                    });
+
+                    // When they disconnect
+                    call.on('close', () => {
+                        log('Call closed');
+                        userVideo.remove();
+                    });
+
+                    // Store the call reference
+                    peers[call.peer] = call;
+                });
+            }
+
+            // Connect to users who are already in the room
+            function connectToExistingUsers() {
+                log('Requesting list of existing users');
+
+                // Ask for existing users via WebSocket
+                chatSocket.send(JSON.stringify({
+                    'type': 'get_users',
+                    'user_id': userId
+                }));
+            }
+
+            // Function to connect to a new user
+            function connectToNewUser(peerId) {
+                log('Connecting to user with peer ID:', peerId);
+
+                // Don't connect to ourselves
+                if (peerId === myPeerId) {
+                    log('Not connecting to self');
+                    return;
+                }
+
+                // Don't connect if we're already connected
+                if (peers[peerId]) {
+                    log('Already connected to this peer');
+                    return;
+                }
+
+                // Make sure we have a stream to share
+                if (!myStream) {
+                    log('No local stream to share');
+                    return;
+                }
+
+                // Call the new user and send our stream
+                const call = myPeer.call(peerId, myStream);
+                if (!call) {
+                    log('Failed to create call object');
+                    return;
+                }
+
+                log('Calling peer:', peerId);
+
+                // Create a video element for the new user
+                const userVideo = document.createElement('video');
+
+                // When they send back their stream
+                call.on('stream', userVideoStream => {
+                    log('Received stream from:', peerId);
+                    addVideoStream(userVideo, userVideoStream);
+                });
+
+                // When they leave
+                call.on('close', () => {
+                    log('Call closed with:', peerId);
+                    userVideo.remove();
+                });
+
+                // Store the call reference
+                peers[peerId] = call;
+            }
+
+            // Function to add a video stream to the grid
+            function addVideoStream(video, stream) {
+                // Check if this video is already in the grid
+                if (video.srcObject === stream) {
+                    log('Video already added for this stream');
+                    return;
+                }
+
+                // Set the stream as the source for the video element
+                video.srcObject = stream;
+
+                // Create a container for the video with proper styling
+                const videoContainer = document.createElement('div');
+                videoContainer.className = 'participant-video';
+
+                // When the video is ready to play
+                video.addEventListener('loadedmetadata', () => {
+                    video.play()
+                        .catch(e => log('Error playing video:', e));
+                });
+
+                // Add the video to the container and the container to the grid
+                videoContainer.appendChild(video);
+                videoGrid.appendChild(videoContainer);
+
+                log('Added video to the grid');
+            }
+
+            // WebSocket message handler
             chatSocket.onmessage = function(e) {
                 const data = JSON.parse(e.data);
-                addChatMessage(data.user, data.message, data.message_type, data.timestamp);
+                log('WebSocket message received:', data);
+
+                if (data.type === 'user_list') {
+                    // We received a list of users already in the room
+                    log('Received user list:', data.users);
+
+                    // Connect to each user
+                    data.users.forEach(userPeerId => {
+                        if (userPeerId !== myPeerId) {
+                            connectToNewUser(userPeerId);
+                        }
+                    });
+                }
+                else if (data.type === 'join') {
+                    // A new user joined
+                    const joinPeerId = data.peer_id;
+                    log('User joined:', data.username, 'with peer ID:', joinPeerId);
+
+                    if (joinPeerId !== myPeerId) {
+                        // Connect to the new user
+                        connectToNewUser(joinPeerId);
+
+                        // Add system message to chat
+                        addChatMessage('System', `${data.username} joined the class`, 'system', getCurrentTime());
+                    }
+                }
+                else if (data.type === 'leave') {
+                    // A user left
+                    log('User left:', data.username);
+
+                    // Close and remove their video if we have a connection
+                    if (peers[data.peer_id]) {
+                        peers[data.peer_id].close();
+                        delete peers[data.peer_id];
+                    }
+
+                    // Add system message to chat
+                    addChatMessage('System', `${data.username} left the class`, 'system', getCurrentTime());
+                }
+                else if (data.type === 'chat') {
+                    // Regular chat message
+                    addChatMessage(data.user, data.message, data.message_type, data.timestamp);
+                }
+                else if (data.type === 'hand_raise') {
+                    // Hand raise notification
+                    const username = data.username;
+                    const raised = data.raised;
+
+                    // Add system message
+                    addChatMessage('System',
+                        `${username} ${raised ? 'raised' : 'lowered'} their hand`,
+                        'system',
+                        getCurrentTime());
+
+                    // Show notification for raised hands
+                    if (raised) {
+                        showHandRaiseNotification(username);
+                    }
+                }
             };
 
+            // Function to show hand raise notification
+            function showHandRaiseNotification(username) {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = 'hand-raise-notification';
+                notification.innerHTML = `
+            <strong>${username}</strong> raised their hand
+            <button type="button" class="btn-close btn-sm" aria-label="Close"></button>
+        `;
+
+                // Add to page
+                document.body.appendChild(notification);
+
+                // Add close button handler
+                notification.querySelector('.btn-close').addEventListener('click', () => {
+                    notification.remove();
+                });
+
+                // Auto dismiss after 5 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+
+                // Play sound if available
+                try {
+                    const audio = new Audio('/static/sounds/notification.mp3');
+                    audio.play();
+                } catch (e) {
+                    log('Sound notification not available');
+                }
+            }
+
+            // Handle WebSocket connection close
             chatSocket.onclose = function(e) {
-                console.error('Chat socket closed unexpectedly');
+                log('Chat socket closed unexpectedly');
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'alert alert-danger';
+                errorMsg.textContent = 'Connection to server lost. Please refresh the page.';
+                document.querySelector('.card-body').prepend(errorMsg);
             };
 
-            // Chat functionality
+            // Get current time for messages
+            function getCurrentTime() {
+                const now = new Date();
+                return now.getHours().toString().padStart(2, '0') + ':' +
+                    now.getMinutes().toString().padStart(2, '0');
+            }
+
+            // Add a chat message to the UI
             function addChatMessage(username, message, messageType, timestamp) {
                 const messageContainer = document.createElement('div');
 
                 if (messageType === 'ai') {
                     messageContainer.className = 'chat-message ai-message';
+                } else if (messageType === 'system') {
+                    messageContainer.className = 'chat-message system-message';
+                    messageContainer.innerHTML = `<div class="text-center"><small>${message}</small></div>`;
+                    document.querySelector('#chat-messages').appendChild(messageContainer);
+                    scrollChatToBottom();
+                    return;
                 } else if (username === userName) {
                     messageContainer.className = 'chat-message current-user-message';
                 } else {
@@ -214,16 +768,19 @@
                 }
 
                 messageContainer.innerHTML = `
-                <div>
-                    <strong>${username}</strong>
-                    <span class="float-end text-muted small">${timestamp}</span>
-                </div>
-                <div>${message}</div>
-            `;
+            <div>
+                <strong>${username}</strong>
+                <span class="float-end text-muted small">${timestamp}</span>
+            </div>
+            <div>${message}</div>
+        `;
 
                 document.querySelector('#chat-messages').appendChild(messageContainer);
+                scrollChatToBottom();
+            }
 
-                // Scroll to bottom
+            // Scroll chat to bottom
+            function scrollChatToBottom() {
                 const chatMessages = document.querySelector('#chat-messages');
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
@@ -238,6 +795,7 @@
                 if (message.trim() === '') return;
 
                 chatSocket.send(JSON.stringify({
+                    'type': 'chat',
                     'message': message,
                     'user_id': userId
                 }));
@@ -258,7 +816,7 @@
                 });
             });
 
-            // Fetch existing chat messages when page loads
+            // Load existing chat messages
             function loadExistingMessages() {
                 $.ajax({
                     url: "{% url 'get_chat_messages' video_class.id %}",
@@ -267,78 +825,15 @@
                         data.messages.forEach(function(msg) {
                             addChatMessage(msg.user, msg.content, msg.message_type, msg.timestamp);
                         });
-
-                        // Scroll to bottom
-                        const chatMessages = document.querySelector('#chat-messages');
-                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                        scrollChatToBottom();
                     }
                 });
             }
 
-            loadExistingMessages();
-
-            // Video conferencing functionality with PeerJS
-            const videoGrid = document.getElementById('video-grid');
-            const myPeer = new Peer(undefined, {
-                host: '/',
-                port: '3001' // You'd need to set up a PeerJS server
-            });
-
-            const myVideo = document.createElement('video');
-            myVideo.muted = true; // Mute our own video so we don't hear ourselves
-
-            const peers = {};
-            let myStream = null;
-
-            // Get user's audio and video stream
-            navigator.mediaDevices.getUserMedia({
-                video: true,
-                audio: true
-            }).then(stream => {
-                myStream = stream;
-                addVideoStream(myVideo, stream);
-
-                // Answer call from other users
-                myPeer.on('call', call => {
-                    call.answer(stream);
-
-                    const video = document.createElement('video');
-                    call.on('stream', userVideoStream => {
-                        addVideoStream(video, userVideoStream);
-                    });
-
-                    call.on('close', () => {
-                        video.remove();
-                    });
-
-                    peers[call.peer] = call;
-                });
-
-                // Notify server that we've joined
-                chatSocket.send(JSON.stringify({
-                    'message': userName + ' has joined the class.',
-                    'user_id': 'system'
-                }));
-            });
-
-            // When a new user connects
-            myPeer.on('open', id => {
-                // In a complete implementation, you'd broadcast this to other users
-                console.log('My peer ID is: ' + id);
-            });
-
-            // Function to add a video stream to the grid
-            function addVideoStream(video, stream) {
-                video.srcObject = stream;
-                video.addEventListener('loadedmetadata', () => {
-                    video.play();
-                });
-                video.classList.add('w-100', 'h-100');
-                videoGrid.append(video);
-            }
-
             // UI Controls
             $('#toggle-video').click(function() {
+                if (!myStream) return;
+
                 const videoTrack = myStream.getVideoTracks()[0];
                 if (videoTrack) {
                     videoTrack.enabled = !videoTrack.enabled;
@@ -353,6 +848,8 @@
             });
 
             $('#toggle-audio').click(function() {
+                if (!myStream) return;
+
                 const audioTrack = myStream.getAudioTracks()[0];
                 if (audioTrack) {
                     audioTrack.enabled = !audioTrack.enabled;
@@ -366,74 +863,171 @@
                 }
             });
 
-            $('#share-screen').click(function() {
-                navigator.mediaDevices.getDisplayMedia({
-                    video: true
-                }).then(stream => {
-                    // Replace video track with screen track
-                    const videoTrack = myStream.getVideoTracks()[0];
-                    const screenTrack = stream.getVideoTracks()[0];
+            $('#share-screen').click(async function() {
+                try {
+                    const screenStream = await navigator.mediaDevices.getDisplayMedia({
+                        video: true
+                    });
 
-                    if (videoTrack && screenTrack) {
-                        // Replace in all peer connections
-                        for (let peerId in peers) {
-                            const sender = peers[peerId].peerConnection.getSenders().find(s => s.track.kind === videoTrack.kind);
-                            if (sender) {
-                                sender.replaceTrack(screenTrack);
-                            }
-                        }
+                    const screenTrack = screenStream.getVideoTracks()[0];
 
-                        // Replace in local video
-                        const senders = myPeer._connections.map(conn => conn.peerConnection.getSenders()).flat();
-                        senders.forEach(sender => {
-                            if (sender.track.kind === 'video') {
-                                sender.replaceTrack(screenTrack);
+                    if (screenTrack) {
+                        // Replace tracks in all peer connections
+                        Object.values(peers).forEach(peer => {
+                            const senders = peer.peerConnection.getSenders();
+                            const videoSender = senders.find(sender =>
+                                sender.track && sender.track.kind === 'video'
+                            );
+
+                            if (videoSender) {
+                                videoSender.replaceTrack(screenTrack);
                             }
                         });
 
-                        // When screen sharing ends
-                        screenTrack.onended = () => {
-                            // Replace screen track with video track
-                            for (let peerId in peers) {
-                                const sender = peers[peerId].peerConnection.getSenders().find(s => s.track.kind === screenTrack.kind);
-                                if (sender) {
-                                    sender.replaceTrack(videoTrack);
-                                }
-                            }
+                        // Replace in local preview
+                        const oldVideoTrack = myStream.getVideoTracks()[0];
+                        if (oldVideoTrack) {
+                            myStream.removeTrack(oldVideoTrack);
+                        }
+                        myStream.addTrack(screenTrack);
 
-                            // Replace in local video
-                            const senders = myPeer._connections.map(conn => conn.peerConnection.getSenders()).flat();
-                            senders.forEach(sender => {
-                                if (sender.track.kind === 'video') {
-                                    sender.replaceTrack(videoTrack);
-                                }
-                            });
+                        // Update our video preview
+                        myVideo.srcObject = myStream;
 
-                            $(this).removeClass('btn-danger').addClass('btn-outline-primary');
-                        };
-
+                        // Update button state
                         $(this).removeClass('btn-outline-primary').addClass('btn-danger');
+                        $(this).html('<i class="fas fa-desktop"></i> Stop');
+
+                        // Handle screen share ending
+                        screenTrack.onended = async function() {
+                            try {
+                                // Get new camera video track
+                                const newStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                                const newVideoTrack = newStream.getVideoTracks()[0];
+
+                                // Replace in all peer connections
+                                Object.values(peers).forEach(peer => {
+                                    const senders = peer.peerConnection.getSenders();
+                                    const videoSender = senders.find(sender =>
+                                        sender.track && sender.track.kind === 'video'
+                                    );
+
+                                    if (videoSender) {
+                                        videoSender.replaceTrack(newVideoTrack);
+                                    }
+                                });
+
+                                // Replace in local preview
+                                const oldTrack = myStream.getVideoTracks()[0];
+                                if (oldTrack) {
+                                    myStream.removeTrack(oldTrack);
+                                }
+                                myStream.addTrack(newVideoTrack);
+
+                                // Update our video preview
+                                myVideo.srcObject = myStream;
+
+                                // Update button state
+                                $('#share-screen').removeClass('btn-danger').addClass('btn-outline-primary');
+                                $('#share-screen').html('<i class="fas fa-desktop"></i>');
+
+                            } catch (err) {
+                                log('Error getting camera after screen share:', err);
+                            }
+                        };
                     }
-                }).catch(err => {
-                    console.error('Error sharing screen:', err);
-                });
+                } catch (err) {
+                    log('Error sharing screen:', err);
+                }
             });
 
             $('#raise-hand').click(function() {
+                const isRaised = $(this).hasClass('btn-warning');
                 $(this).toggleClass('btn-outline-warning btn-warning');
 
-                if ($(this).hasClass('btn-warning')) {
+                // Send hand raise status to server
+                chatSocket.send(JSON.stringify({
+                    'type': 'hand_raise',
+                    'user_id': userId,
+                    'username': userName,
+                    'raised': !isRaised
+                }));
+            });
+
+            // Add switch camera button for mobile
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                // We're on a mobile device, add camera switch button
+                const switchCameraBtn = document.createElement('button');
+                switchCameraBtn.className = 'btn btn-outline-primary me-2';
+                switchCameraBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
+                switchCameraBtn.id = 'switch-camera';
+                document.querySelector('.controls-container').appendChild(switchCameraBtn);
+
+                // Handle camera switching
+                $('#switch-camera').click(async function() {
+                    if (!myStream) return;
+
+                    try {
+                        // Get current camera facing mode
+                        const videoTrack = myStream.getVideoTracks()[0];
+                        if (!videoTrack) return;
+
+                        const settings = videoTrack.getSettings();
+                        const currentFacingMode = settings.facingMode;
+
+                        // Request the opposite camera
+                        const newFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+
+                        // Stop current track
+                        videoTrack.stop();
+
+                        // Get new video stream with different camera
+                        const newStream = await navigator.mediaDevices.getUserMedia({
+                            video: { facingMode: newFacingMode },
+                            audio: false
+                        });
+
+                        const newVideoTrack = newStream.getVideoTracks()[0];
+
+                        // Replace track in all peer connections
+                        Object.values(peers).forEach(peer => {
+                            const senders = peer.peerConnection.getSenders();
+                            const videoSender = senders.find(sender =>
+                                sender.track && sender.track.kind === 'video'
+                            );
+
+                            if (videoSender) {
+                                videoSender.replaceTrack(newVideoTrack);
+                            }
+                        });
+
+                        // Replace in local stream
+                        myStream.removeTrack(videoTrack);
+                        myStream.addTrack(newVideoTrack);
+
+                        // Update local video preview
+                        myVideo.srcObject = myStream;
+
+                    } catch (err) {
+                        log('Error switching camera:', err);
+                    }
+                });
+            }
+
+            // Handle window beforeunload event to notify when a user leaves
+            window.addEventListener('beforeunload', () => {
+                if (myPeerId) {
                     chatSocket.send(JSON.stringify({
-                        'message': userName + ' raised their hand.',
-                        'user_id': 'system'
-                    }));
-                } else {
-                    chatSocket.send(JSON.stringify({
-                        'message': userName + ' lowered their hand.',
-                        'user_id': 'system'
+                        'type': 'leave',
+                        'user_id': userId,
+                        'username': userName,
+                        'peer_id': myPeerId
                     }));
                 }
             });
+
+            // Initialize
+            loadExistingMessages();
         });
     </script>
 {% endblock %}

@@ -80,67 +80,115 @@ def join_video_class(request, class_id):
     return render(request, "video_conferencing/video_room.html", context)
 
 
+
+
 @login_required
-def end_video_class(request, class_id):
-    video_class = get_object_or_404(VideoClass, id=class_id)
+def video_room(request, room_id):
+    """View for the video classroom"""
+    video_class = get_object_or_404(VideoClass, room_id=room_id)
 
-    if request.user != video_class.teacher:
-        messages.error(request, "Only the teacher can end the class.")
-        return redirect("join_video_class", class_id=video_class.id)
+    # Check if the user is allowed to join (teacher or enrolled student)
+    if video_class.teacher != request.user and not video_class.students.filter(id=request.user.id).exists():
+        # Redirect to enrollment page or show error
+        return redirect('enrollment_page')  # Replace with your enrollment URL
 
-    video_class.is_active = False
-    video_class.save()
-    messages.success(request, "Class ended successfully!")
-    return redirect("video_class_list")
+    # Update the active status if the teacher is joining
+    if video_class.teacher == request.user and not video_class.is_active:
+        video_class.is_active = True
+        video_class.save()
 
+    # Create chat form
+    chat_form = ChatMessageForm()
+
+    context = {
+        'video_class': video_class,
+        'chat_form': chat_form,
+    }
+
+    return render(request, 'video_conferencing/video_room.html', context)
 
 @login_required
 def chat_message(request, class_id):
-    video_class = get_object_or_404(VideoClass, id=class_id)
+    """Handle sending a chat message"""
+    if request.method == 'POST':
+        video_class = get_object_or_404(VideoClass, id=class_id)
+        content = request.POST.get('content', '')
 
-    if request.method == "POST":
-        form = ChatMessageForm(request.POST)
-        if form.is_valid():
-            message = form.save(commit=False)
-            message.video_class = video_class
-            message.user = request.user
-            message.save()
+        if content:
+            # Determine message type
+            message_type = 'user'
+            if content.startswith('@ai '):
+                message_type = 'ai_request'
 
-            # Process message for AI response if it contains "@ai"
-            if "@ai" in message.content:
-                # Simple AI response - in a real app, you'd integrate with a proper AI service
-                ai_content = "I'm the AI assistant. I can help you with your DIY project questions!"
-                ChatMessage.objects.create(
-                    video_class=video_class, content=ai_content, message_type="ai"
-                )
+            # Create the message
+            ChatMessage.objects.create(
+                video_class=video_class,
+                user=request.user,
+                content=content,
+                message_type=message_type
+            )
 
-            if request.headers.get("x-requested-with") == "XMLHttpRequest":
-                return JsonResponse({"status": "success"})
+            return JsonResponse({'status': 'success'})
 
-            return redirect("join_video_class", class_id=video_class.id)
-
-    return redirect("join_video_class", class_id=video_class.id)
-
+    return JsonResponse({'status': 'error'}, status=400)
 
 @login_required
 def get_chat_messages(request, class_id):
+    """Get all chat messages for a class"""
     video_class = get_object_or_404(VideoClass, id=class_id)
 
-    # Get the most recent messages
-    messages = ChatMessage.objects.filter(video_class=video_class).order_by(
-        "-created_at"
-    )[:50]
+    # Get the last 50 messages
+    messages = ChatMessage.objects.filter(video_class=video_class).order_by('created_at')[:50]
 
     messages_data = []
-    for message in reversed(list(messages)):  # Reverse to show oldest first
-        messages_data.append(
-            {
-                "id": message.id,
-                "content": message.content,
-                "user": message.user.username if message.user else "AI Assistant",
-                "message_type": message.message_type,
-                "timestamp": message.created_at.strftime("%H:%M:%S"),
-            }
-        )
+    for msg in messages:
+        user_display = 'AI Assistant' if msg.message_type == 'ai' else (msg.user.username if msg.user else 'System')
 
-    return JsonResponse({"messages": messages_data})
+        messages_data.append({
+            'user': user_display,
+            'content': msg.content,
+            'message_type': msg.message_type,
+            'timestamp': msg.created_at.strftime('%H:%M')
+        })
+
+    return JsonResponse({'messages': messages_data})
+
+@login_required
+def end_video_class(request, class_id):
+    """End a video class (teacher only)"""
+    if request.method == 'POST':
+        video_class = get_object_or_404(VideoClass, id=class_id, teacher=request.user)
+
+        # Mark class as inactive
+        video_class.is_active = False
+        video_class.end_time = timezone.now()
+        video_class.save()
+
+        # Redirect to home or dashboard instead of class summary
+        return redirect('class_summary', class_id=class_id)  # Replace 'home' with any existing URL name in your project
+
+    return JsonResponse({'status': 'error'}, status=400)
+
+@login_required
+def class_summary(request, class_id):
+    """View for class summary after a class has ended"""
+    video_class = get_object_or_404(VideoClass, id=class_id)
+
+    # Check if user is authorized to view the summary
+    if video_class.teacher != request.user:
+        return redirect('home')  # Redirect to home or another appropriate page
+
+    # Get chat messages for this class
+    messages = ChatMessage.objects.filter(video_class=video_class).order_by('created_at')
+
+    # Calculate class duration
+    duration = video_class.duration
+
+
+    context = {
+        'video_class': video_class,
+        'messages': messages,
+        'duration': duration,
+    }
+
+    return render(request, 'video_conferencing/class_summary.html', context)

@@ -15,4 +15,6 @@ urlpatterns = [
         name="get_chat_messages",
     ),
     path("<int:class_id>/join/", views.join_video_class, name="join_video_class"),
+    path('<int:class_id>/summary/', views.class_summary, name='class_summary'),
+
 ]

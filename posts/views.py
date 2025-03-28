@@ -9,7 +9,6 @@ from accounts.models import Follow, User
 from .forms import CommentForm, PostForm
 from .models import Comment, Like, Post, Share
 
-
 @login_required
 def home(request):
     # Get posts from users that the current user follows
@@ -25,9 +24,13 @@ def home(request):
     all_posts = list(posts) + list(user_posts)
     # all_posts.sort(key=lambda x: x.created_at, reverse=True)
 
+    # Get suggested users (users that the current user is not following)
+    suggested_users = User.objects.exclude(id__in=following_users).exclude(id=request.user.id)
+
     context = {
         "posts": all_posts,
         "form": PostForm(),
+        "suggested_users": suggested_users,
     }
     return render(request, "posts/home.html", context)
 
