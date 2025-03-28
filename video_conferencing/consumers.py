@@ -4,6 +4,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.utils import timezone
 from .models import VideoClass, ChatMessage
+from .ai_chatbot import AIChatbot
 
 class ClassConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -243,19 +244,10 @@ class ClassConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def generate_ai_response(self, message):
-        """Generate a response from AI"""
-        # This is a placeholder - in a real app, you would integrate with an AI service
+        clean_message = message.replace('@ai', '').strip()
+        context = {
 
-        # Simple rule-based responses for demo purposes
-        message = message.lower()
-
-        if 'hello' in message or 'hi' in message:
-            return "Hello! How can I help with today's class?"
-        elif 'help' in message:
-            return "I'm here to assist with questions about the class material. What would you like to know?"
-        elif 'thank' in message:
-            return "You're welcome! Let me know if you need anything else."
-        elif 'question' in message:
-            return "That's a great question! Please provide more details so I can give you a better answer."
-        else:
-            return "I understand you're asking about: " + message + ". Could you provide more context so I can help better?"
+        }
+        chatbot = AIChatbot()
+        response = chatbot.get_response(clean_message, context)
+        return response

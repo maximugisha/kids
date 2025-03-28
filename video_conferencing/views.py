@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
+from .ai_chatbot import AIChatbot
 from .forms import ChatMessageForm, VideoClassForm
 from .models import ChatMessage, VideoClass
 
@@ -23,8 +24,8 @@ def video_class_list(request):
     past_classes = VideoClass.objects.filter(
         organization=request.user.organization, scheduled_time__lt=timezone.now()
     ).order_by("-scheduled_time")[
-        :10
-    ]  # Show only the 10 most recent past classes
+                   :10
+                   ]  # Show only the 10 most recent past classes
 
     context = {
         "upcoming_classes": upcoming_classes,
@@ -80,8 +81,6 @@ def join_video_class(request, class_id):
     return render(request, "video_conferencing/video_room.html", context)
 
 
-
-
 @login_required
 def video_room(request, room_id):
     """View for the video classroom"""
@@ -107,20 +106,33 @@ def video_room(request, room_id):
 
     return render(request, 'video_conferencing/video_room.html', context)
 
+
+@login_required
 @login_required
 def chat_message(request, class_id):
-    """Handle sending a chat message"""
     if request.method == 'POST':
         video_class = get_object_or_404(VideoClass, id=class_id)
         content = request.POST.get('content', '')
 
         if content:
-            # Determine message type
             message_type = 'user'
             if content.startswith('@ai '):
                 message_type = 'ai_request'
+                clean_message = content.replace('@ai', '').strip()
+                context = {
+                    'class_title': video_class.title,
+                    'user_type': request.user.user_type,
+                    'organization': request.user.organization.name
+                }
+                chatbot = AIChatbot()
+                ai_response = chatbot.get_response(clean_message, context)
+                ChatMessage.objects.create(
+                    video_class=video_class,
+                    user=None,  # AI user
+                    content=ai_response,
+                    message_type='ai'
+                )
 
-            # Create the message
             ChatMessage.objects.create(
                 video_class=video_class,
                 user=request.user,
@@ -131,6 +143,7 @@ def chat_message(request, class_id):
             return JsonResponse({'status': 'success'})
 
     return JsonResponse({'status': 'error'}, status=400)
+
 
 @login_required
 def get_chat_messages(request, class_id):
@@ -153,6 +166,7 @@ def get_chat_messages(request, class_id):
 
     return JsonResponse({'messages': messages_data})
 
+
 @login_required
 def end_video_class(request, class_id):
     """End a video class (teacher only)"""
@@ -169,6 +183,7 @@ def end_video_class(request, class_id):
 
     return JsonResponse({'status': 'error'}, status=400)
 
+
 @login_required
 def class_summary(request, class_id):
     """View for class summary after a class has ended"""
@@ -183,7 +198,6 @@ def class_summary(request, class_id):
 
     # Calculate class duration
     duration = video_class.duration
-
 
     context = {
         'video_class': video_class,

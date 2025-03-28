@@ -156,6 +156,6 @@ LOGOUT_REDIRECT_URL = "login"
 
 
 # AI Chat settings
-AI_API_KEY = os.environ.get(
-    "AI_API_KEY", ""
+GOOGLE_API_KEY = os.environ.get(
+    "GOOGLE_API_KEY", ""
 )  # Set your AI service API key as environment variable

@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    command: daphne -b 0.0.0.0 -p 8000 kids_diy.asgi:application
+    ports:
+      - "8000:8000"
+    environment:
+      - ALLOWED_HOSTS=*
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"

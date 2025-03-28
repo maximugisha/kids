@@ -402,9 +402,9 @@
 
             // Initialize PeerJS - IMPORTANT: make sure these settings match your server
             const myPeer = new Peer(myPeerId, {
-                host: "https://9000-peers-peerjsserver-v8mkqo3gk9i.ws-eu118.gitpod.io",
+                host: window.location.hostname,
                 port: '3001', // Make sure this port is open and matches your PeerJS server
-                path: '/', // Adjust this if your PeerJS server uses a different path
+                path: '/myapp', // Adjust this if your PeerJS server uses a different path
                 debug: 2, // Enable debug logging
                 config: {
                     'iceServers': [

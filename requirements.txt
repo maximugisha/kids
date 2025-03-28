@@ -55,3 +55,6 @@ django-debug-toolbar==4.3.0
 
 # Deployment
 sentry-sdk==1.40.6
+openai
+colorama~=0.4.6
+protobuf~=5.29.4
