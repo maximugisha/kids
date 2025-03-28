@@ -402,8 +402,9 @@
 
             // Initialize PeerJS - IMPORTANT: make sure these settings match your server
             const myPeer = new Peer(myPeerId, {
-                host: window.location.hostname,
-                port: '3001', // Make sure this port is open and matches your PeerJS server
+                host: 'peerjs-b50f8c25-91b4-40a9-b50b.cranecloud.io',
+                {#port: '3001', // Make sure this port is open and matches your PeerJS server#}
+                secure: true, // Use secure connection if your server supports HTTPS
                 path: '/myapp', // Adjust this if your PeerJS server uses a different path
                 debug: 2, // Enable debug logging
                 config: {

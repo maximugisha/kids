@@ -58,3 +58,5 @@ sentry-sdk==1.40.6
 openai
 colorama~=0.4.6
 protobuf~=5.29.4
+google-genai
+google-generativeai
